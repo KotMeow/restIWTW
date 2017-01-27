@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Start Page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/2.27.2/css/uikit.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/2.27.2/js/uikit.min.js"></script>
+</head>
+<style>
+    html {
+        background: linear-gradient(to left, #2a99ef , #52d9e5);
+        color: #fff;
+    }
+
+    .uk-panel {
+        color: #fff;
+        display: inline-block;
+        margin: 15px;
+        padding: 10px;
+        border: 1px solid #999;
+    }
+</style>
+<body>
+<div class="uk-container uk-container-center uk-margin-large-top ">
+    <div class="uk-grid">
+        <div class="uk-width-1-2">
+            <h2>Add movie</h2>
+            <form id="formMovie" class="uk-form uk-margin-large-top">
+                <div class="uk-form-row">
+                    <input name="title" id="title" placeholder="Title" minlength="3" required/>
+                </div>
+                <div class="uk-form-row">
+                    <input name="genre" id="genre" placeholder="Genre" minlength="3" required/>
+                </div>
+                <div class="uk-form-row">
+                    <input type="number" name="releaseYear" id="releaseYear" placeholder="Release Year" min="1920" max="3000" required/>
+                </div>
+                <div class="uk-form-row">
+                    <input id="submitMovie" class="uk-button uk-button-success" type="submit" value="Submit"/>
+                </div>
+
+            </form>
+        </div>
+        <div class="uk-width-1-2">
+            <h2>Add actor</h2>
+            <form id="formActor" class="uk-form uk-margin-large-top" action="/api/actors/add" method="POST">
+                <div class="uk-form-row">
+                    <input id="name" name="name" placeholder="Name" minlength="3" required/>
+                </div>
+                <div class="uk-form-row">
+                    <input id="role" name="role" placeholder="Role" minlength="3" required/>
+                </div>
+                <div class="uk-form-row">
+                    <input id="movieTitle" name="movieTitle" placeholder="Movie title" minlength="3" required/>
+                </div>
+                <div class="uk-form-row">
+                    <input class="uk-button uk-button-success" type="submit" value="Submit" required/>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="uk-width-1-1 uk-margin-large-top">
+            <h1>All movies:</h1>
+            <div class="movieList uk-margin-large-top">
+                <ul class="uk-list uk-list-line">
+
+                </ul>
+            </div>
+
+        </div>
+        <div class="uk-width-1-1 uk-margin-large-top">
+            <h1>All actors:</h1>
+            <div class="actorsList uk-margin-large-top">
+                <ul class="uk-list uk-list-line">
+
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        reloadMovies();
+        reloadActors();
+        function reloadMovies() {
+            $.getJSON("api/movies", function (data) {
+                $.each(data, function (key, val) {
+                    $(".movieList").append("<div class='uk-panel'><h2 class='uk-panel-title'>" + val.title + "<br><span style='font-size: smaller' '>  " + val.genre +
+                        " " + val.releaseYear + "</span></h2><a class='uk-button uk-button-primary' href=" + val.id + "/displayActors" + ">Show Actors " + (val.actors.length) + " </a><br><br><a class='delete uk-button uk-button-danger' data-id='"
+                        + (val.id) + "'> Delete </a><a href=" + val.id + "/edit" + " class='edit uk-button uk-button-primary' data-id='" + (val.id) + "'> Edit </a></div>");
+
+                });
+            });
+        }
+        function reloadActors() {
+            $.getJSON("api/actors", function (data) {
+                $.each(data, function (key, val) {
+                    $(".actorsList").append("<div class='uk-panel'><h2 class='uk-panel-title'>" + val.name +
+                        " " + val.role + "</h2><a class='delete uk-button uk-button-danger' data-id='" + (val.id) +
+                        "'> Delete </a><a href=" + "actors/" + val.id + "/edit" + " class='edit uk-button uk-button-primary' data-id='"
+                        + (val.id) + "'> Edit </a></div>");
+                });
+            });
+        }
+
+        $("#formMovie").submit(function(event) {
+
+            event.preventDefault();
+            var url = "api/movies/add";
+            var posting = $.post( url, { title: $('#title').val(), genre: $('#genre').val(), releaseYear : $('#releaseYear').val() } );
+            posting.done(function( data ) {
+                $(".movieList").html("");
+                reloadMovies();
+                document.getElementById("formMovie").reset();
+            });
+        });
+        $("#formActor").submit(function(event) {
+
+            document.getElementById("formActor").reset();
+            event.preventDefault();
+            var url = "api/actors/add";
+            var posting = $.post( url, { name: $('#name').val(), role: $('#role').val(), movieTitle : $('#movieTitle').val() } );
+            posting.done(function( data ) {
+                $(".actorsList").html("");
+                reloadActors();
+            });
+            posting.fail(function (data) {
+                
+            })
+        });
+
+        $('.movieList').on("click", "a.delete", function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: 'api/movies/' + $(this).data('id'),
+                type: 'DELETE',
+                success: function (result) {
+                    $(".movieList").html("");
+                    reloadMovies();
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -25,7 +25,7 @@ public class ActorManager {
     MovieService movieService;
 
     @GET
-    @Path("/actors/{idActor}")
+    @Path("/{idActor}")
     @Produces("application/json")
     public Actor getActor(@PathParam("idActor") long idActor) {
         return actorService.getActorById(idActor);
@@ -47,12 +47,19 @@ public class ActorManager {
                          @FormParam("movieTitle") String movieTitle,
                          @Context HttpServletResponse servletResponse) throws IOException {
         Actor actor = new Actor(name, role);
-
-        if (movieService.getMoviesByName(movieTitle) != null ) {
-        actorService.addActor(actor);
-        long idMovie = movieService.getMoviesByName(movieTitle).getId();
-        movieService.addActorToMovie(idMovie, actor.getId());
+        if (movieService.getMoviesByName(movieTitle) != null) {
+            actorService.addActor(actor);
+            long idMovie = movieService.getMoviesByName(movieTitle).getId();
+            movieService.addActorToMovie(idMovie, actor.getId());
         }
+        else servletResponse.sendError(444);
+    }
 
+    @DELETE
+    @Path("/{idActor}")
+    @Produces("application/json")
+    public boolean deleteActor(@PathParam("idActor") long idActor) {
+        movieService.removeActorFromMovie(idActor);
+        return true;
     }
 }

@@ -59,11 +59,14 @@ public class MovieService {
 
     }
 
-    public void removeActorFromMovie(long movieId, long actorId) {
-
-            Actor actor = manager.find(Actor.class, actorId);
-            Movie movie = manager.find(Movie.class, movieId);
+    public void removeActorFromMovie(long actorId) {
+        Actor actor = manager.find(Actor.class, actorId);
+        for (Movie movie: getAllMovies()) {
             movie.getActors().remove(actor);
+        }
+
+//            Movie movie = manager.find(Movie.class, movieId);
+//            movie.getActors().remove(actor);
             manager.remove(actor);
 
     }

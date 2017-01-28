@@ -22,6 +22,7 @@
     }
 </style>
 <body>
+
 <div class="uk-container uk-container-center uk-margin-large-top ">
     <div class="uk-grid">
         <div class="uk-width-1-2">
@@ -43,8 +44,12 @@
             </form>
         </div>
         <div class="uk-width-1-2">
+            <div class="uk-alert uk-alert-danger uk-hidden" data-uk-alert>
+                <a href="" class="uk-alert-close uk-close"></a>
+                <p id="error"></p>
+            </div>
             <h2>Add actor</h2>
-            <form id="formActor" class="uk-form uk-margin-large-top" action="/api/actors/add" method="POST">
+            <form id="formActor" class="uk-form uk-margin-large-top">
                 <div class="uk-form-row">
                     <input id="name" name="name" placeholder="Name" minlength="3" required/>
                 </div>
@@ -89,7 +94,7 @@
             $.getJSON("api/movies", function (data) {
                 $.each(data, function (key, val) {
                     $(".movieList").append("<div class='uk-panel'><h2 class='uk-panel-title'>" + val.title + "<br><span style='font-size: smaller' '>  " + val.genre +
-                        " " + val.releaseYear + "</span></h2><a class='uk-button uk-button-primary' href=" + val.id + "/displayActors" + ">Show Actors " + (val.actors.length) + " </a><br><br><a class='delete uk-button uk-button-danger' data-id='"
+                        " " + val.releaseYear + "</span></h2><a class='uk-button uk-button-primary' href=" + val.id + "/displayActors" + ">Show Actors </a><br><br><a class='delete uk-button uk-button-danger' data-id='"
                         + (val.id) + "'> Delete </a><a href=" + val.id + "/edit" + " class='edit uk-button uk-button-primary' data-id='" + (val.id) + "'> Edit </a></div>");
 
                 });
@@ -119,7 +124,7 @@
         });
         $("#formActor").submit(function(event) {
 
-            document.getElementById("formActor").reset();
+
             event.preventDefault();
             var url = "api/actors/add";
             var posting = $.post( url, { name: $('#name').val(), role: $('#role').val(), movieTitle : $('#movieTitle').val() } );
@@ -128,8 +133,11 @@
                 reloadActors();
             });
             posting.fail(function (data) {
-                
-            })
+                $('.uk-alert').removeClass('uk-hidden');
+                $('#error').text("Wrong movie title");
+                console.log("Wrong movie title");
+            });
+            document.getElementById("formActor").reset();
         });
 
         $('.movieList').on("click", "a.delete", function (e) {
@@ -140,6 +148,17 @@
                 success: function (result) {
                     $(".movieList").html("");
                     reloadMovies();
+                }
+            });
+        });
+        $('.actorsList').on("click", "a.delete", function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: "api/actors/" +$(this).data('id'),
+                type: 'DELETE',
+                success: function (result) {
+                    $(".actorsList").html("");
+                    reloadActors();
                 }
             });
         });

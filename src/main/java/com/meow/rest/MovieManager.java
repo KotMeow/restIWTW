@@ -143,12 +143,6 @@ public class MovieManager {
     }
 
 
-    @DELETE
-    @Path("/{idMovie}/actors/{idActor}")
-    @Produces("application/json")
-    public boolean deleteActor(@PathParam("idMovie") long idMovie, @PathParam("idActor") long idActor) {
-        movieService.removeActorFromMovie(idMovie, idActor);
-        return true;
-    }
+
 
 }

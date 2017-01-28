@@ -42,7 +42,7 @@ public class ActorManager {
     @Path("/")
     @Produces(MediaType.TEXT_HTML)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public void addActor(@FormParam("name") String name,
+    public Response addActor(@FormParam("name") String name,
                          @FormParam("role") String role,
                          @FormParam("movieTitle") String movieTitle,
                          @Context HttpServletResponse servletResponse) throws IOException {
@@ -51,7 +51,8 @@ public class ActorManager {
             actorService.addActor(actor);
             long idMovie = movieService.getMoviesByName(movieTitle).getId();
             movieService.addActorToMovie(idMovie, actor.getId());
-        } else servletResponse.sendError(444);
+            return Response.status(201).build();
+        } else return Response.status(500).build();
     }
 
     @POST

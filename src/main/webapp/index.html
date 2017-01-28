@@ -27,6 +27,10 @@
     <div class="uk-grid">
         <div class="uk-width-1-2">
             <h2>Add movie</h2>
+            <div class="uk-alert uk-alert-danger uk-hidden movieAlert" data-uk-alert>
+                <a href="" class="uk-alert-close uk-close"></a>
+                <p id="movieError"></p>
+            </div>
             <form id="formMovie" class="uk-form uk-margin-large-top">
                 <div class="uk-form-row">
                     <input name="title" id="title" placeholder="Title" minlength="3" required/>
@@ -44,11 +48,11 @@
             </form>
         </div>
         <div class="uk-width-1-2">
-            <div class="uk-alert uk-alert-danger uk-hidden" data-uk-alert>
-                <a href="" class="uk-alert-close uk-close"></a>
-                <p id="error"></p>
-            </div>
             <h2>Add actor</h2>
+            <div class="uk-alert uk-alert-danger uk-hidden actorAlert" data-uk-alert>
+                <a href="" class="uk-alert-close uk-close"></a>
+                <p id="actorError"></p>
+            </div>
             <form id="formActor" class="uk-form uk-margin-large-top">
                 <div class="uk-form-row">
                     <input id="name" name="name" placeholder="Name" minlength="3" required/>
@@ -114,27 +118,30 @@
         $("#formMovie").submit(function(event) {
 
             event.preventDefault();
-            var url = "api/movies/add";
+            var url = "api/movies/";
             var posting = $.post( url, { title: $('#title').val(), genre: $('#genre').val(), releaseYear : $('#releaseYear').val() } );
             posting.done(function( data ) {
                 $(".movieList").html("");
                 reloadMovies();
-                document.getElementById("formMovie").reset();
             });
+            posting.fail(function (data) {
+                $('.movieAlert').removeClass('uk-hidden');
+                $('#movieError').text("Duplicate title");
+            })
+            document.getElementById("formMovie").reset();
         });
         $("#formActor").submit(function(event) {
 
-
             event.preventDefault();
-            var url = "api/actors/add";
+            var url = "api/actors/";
             var posting = $.post( url, { name: $('#name').val(), role: $('#role').val(), movieTitle : $('#movieTitle').val() } );
             posting.done(function( data ) {
                 $(".actorsList").html("");
                 reloadActors();
             });
             posting.fail(function (data) {
-                $('.uk-alert').removeClass('uk-hidden');
-                $('#error').text("Wrong movie title");
+                $('.actorAlert').removeClass('uk-hidden');
+                $('#actorError').text("Wrong movie title");
                 console.log("Wrong movie title");
             });
             document.getElementById("formActor").reset();
@@ -147,7 +154,9 @@
                 type: 'DELETE',
                 success: function (result) {
                     $(".movieList").html("");
+                    $(".actorsList").html("");
                     reloadMovies();
+                    reloadActors();
                 }
             });
         });

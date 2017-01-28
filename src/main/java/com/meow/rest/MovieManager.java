@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.List;
 
@@ -33,15 +34,6 @@ public class MovieManager {
         return movies;
     }
 
-    @POST
-    @Path("search")
-    @Produces("application/json")
-    public Movie Search(@FormParam("name") String name) {
-        Movie movie = movieService.getMoviesByName(name);
-        if (movie == null) return null;
-        return movie;
-    }
-
 
     @GET
     @Path("/{id}")
@@ -58,40 +50,29 @@ public class MovieManager {
     }
 
 
-
-//    addition
-
     @POST
-    @Path("/{idMovie}/actors/add")
+    @Path("/")
     @Produces(MediaType.TEXT_HTML)
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public void addActor(@FormParam("name") String name,
-                         @FormParam("role") String role,
-                         @PathParam("idMovie") long idMovie,
-                         @Context HttpServletResponse servletResponse) throws IOException {
-        Actor actor = new Actor(name, role);
-        actorService.addActor(actor);
-        movieService.addActorToMovie(idMovie, actor.getId());
-        servletResponse.sendRedirect("/hibernate/api/movies/" + idMovie + "/displayActors");
-    }
-
-    @POST
-    @Path("/add")
-    @Produces(MediaType.TEXT_HTML)
-    public void addMovie(@FormParam("title") String title,
-                         @FormParam("genre") String genre,
-                         @FormParam("releaseYear") int releaseYear,
-                         @Context HttpServletResponse servletResponse) throws IOException {
+    public Response addMovie(@FormParam("title") String title,
+                             @FormParam("genre") String genre,
+                             @FormParam("releaseYear") int releaseYear,
+                             @Context HttpServletResponse servletResponse) throws IOException {
         Movie movie = new Movie(title, releaseYear, genre);
         movieService.addMovie(movie);
+        return Response.status(Response.Status.CREATED).build();
     }
 
+    @DELETE
+    public Response clearPersons(){
+        movieService.clearMovies();
+        return Response.status(200).build();
+    }
 
 //    editing
 
     @POST
     @Path("{id}/edit")
-    public void editMovie(
+    public Response editMovie(
             @PathParam("id") Long id,
             @FormParam("title") String title,
             @FormParam("genre") String genre,
@@ -109,40 +90,18 @@ public class MovieManager {
             movieService.addMovie(movie);
         }
 
-        servletResponse.sendRedirect("/hibernate/api/movies/displayAll");
+        return Response.ok().build();
     }
 
-    @POST
-    @Path("/{idMovie}/actors/{idActor}/edit")
-    @Produces("application/json")
-    public void editActor(@PathParam("idActor") long idActor,
-                          @PathParam("idMovie") long idMovie,
-                          @FormParam("name") String name,
-                          @FormParam("role") String role,
-                          @Context HttpServletResponse servletResponse) throws IOException {
 
-        Actor actor = actorService.getActorById(idActor);
-        if (actor != null) {
-            actor.setName(name);
-            actor.setRole(role);
-            actorService.updateActor(actor);
-        } else {
-            actor = new Actor(name, role);
-            actorService.updateActor(actor);
-        }
-
-        servletResponse.sendRedirect("/hibernate/api/movies/" + idMovie + "/displayActors");
-    }
 
 //    deleting
 
     @DELETE
     @Path("/{id}")
-    public void delete(@PathParam("id") Long id) {
+    public Response delete(@PathParam("id") Long id) {
         movieService.removeMovie(id);
+        return Response.ok().build();
     }
-
-
-
 
 }

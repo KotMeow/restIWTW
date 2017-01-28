@@ -74,4 +74,8 @@ public class MovieService {
     public Movie getMoviesByName(String name) {
         return manager.createQuery("Select a From Movie a where a.title like :custName", Movie.class).setParameter("custName", name).getSingleResult();
     }
+
+    public void clearMovies(){
+        manager.createNamedQuery("movies.deleteAll").executeUpdate();
+    }
 }

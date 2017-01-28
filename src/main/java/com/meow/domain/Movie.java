@@ -11,18 +11,20 @@ import java.util.List;
 @XmlRootElement
 @Entity
 @NamedQueries({
-        @NamedQuery(name="movies.deleteAll", query="Delete from Movie")
+        @NamedQuery(name = "movies.deleteAll", query = "Delete from Movie")
 })
 public class Movie {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @Column(unique = true)
     private String title;
     private int releaseYear;
     private String genre;
+    @OneToMany(targetEntity = Actor.class, fetch = FetchType.EAGER)
+    private List<Actor> actors = new ArrayList<>();
 
     public Movie(String title, int releaseYear, String genre) {
         this.title = title;
@@ -30,9 +32,10 @@ public class Movie {
         this.genre = genre;
     }
 
-    public Movie(){
+    public Movie() {
 
     }
+
     public List<Actor> getActors() {
         return actors;
     }
@@ -40,10 +43,6 @@ public class Movie {
     public void setActors(List<Actor> actors) {
         this.actors = actors;
     }
-
-    @OneToMany(targetEntity = Actor.class, fetch=FetchType.EAGER)
-    private List<Actor> actors = new ArrayList<>();
-
 
     public long getId() {
         return id;

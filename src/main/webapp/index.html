@@ -9,7 +9,7 @@
 </head>
 <style>
     html {
-        background: linear-gradient(to left, #2a99ef , #52d9e5);
+        background: linear-gradient(to left, #2a99ef, #52d9e5);
         color: #fff;
     }
 
@@ -39,7 +39,8 @@
                     <input name="genre" id="genre" placeholder="Genre" minlength="3" required/>
                 </div>
                 <div class="uk-form-row">
-                    <input type="number" name="releaseYear" id="releaseYear" placeholder="Release Year" min="1920" max="3000" required/>
+                    <input type="number" name="releaseYear" id="releaseYear" placeholder="Release Year" min="1920"
+                           max="3000" required/>
                 </div>
                 <div class="uk-form-row">
                     <input id="submitMovie" class="uk-button uk-button-success" type="submit" value="Submit"/>
@@ -104,6 +105,7 @@
                 });
             });
         }
+
         function reloadActors() {
             $.getJSON("api/actors", function (data) {
                 $.each(data, function (key, val) {
@@ -115,27 +117,35 @@
             });
         }
 
-        $("#formMovie").submit(function(event) {
+        $("#formMovie").submit(function (event) {
 
             event.preventDefault();
             var url = "api/movies/";
-            var posting = $.post( url, { title: $('#title').val(), genre: $('#genre').val(), releaseYear : $('#releaseYear').val() } );
-            posting.done(function( data ) {
+            var posting = $.post(url, {
+                title: $('#title').val(),
+                genre: $('#genre').val(),
+                releaseYear: $('#releaseYear').val()
+            });
+            posting.done(function (data) {
                 $(".movieList").html("");
                 reloadMovies();
             });
             posting.fail(function (data) {
                 $('.movieAlert').removeClass('uk-hidden');
                 $('#movieError').text("Duplicate title");
-            })
+            });;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
             document.getElementById("formMovie").reset();
         });
-        $("#formActor").submit(function(event) {
+        $("#formActor").submit(function (event) {
 
             event.preventDefault();
             var url = "api/actors/";
-            var posting = $.post( url, { name: $('#name').val(), role: $('#role').val(), movieTitle : $('#movieTitle').val() } );
-            posting.done(function( data ) {
+            var posting = $.post(url, {
+                name: $('#name').val(),
+                role: $('#role').val(),
+                movieTitle: $('#movieTitle').val()
+            });
+            posting.done(function (data) {
                 $(".actorsList").html("");
                 reloadActors();
             });
@@ -163,7 +173,7 @@
         $('.actorsList').on("click", "a.delete", function (e) {
             e.preventDefault();
             $.ajax({
-                url: "api/actors/" +$(this).data('id'),
+                url: "api/actors/" + $(this).data('id'),
                 type: 'DELETE',
                 success: function (result) {
                     $(".actorsList").html("");

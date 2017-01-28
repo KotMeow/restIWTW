@@ -63,7 +63,7 @@ public class MovieManager {
     }
 
     @DELETE
-    public Response clearPersons(){
+    public Response clearPersons() {
         movieService.clearMovies();
         return Response.status(200).build();
     }
@@ -92,7 +92,6 @@ public class MovieManager {
 
         return Response.ok().build();
     }
-
 
 
 //    deleting

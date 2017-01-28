@@ -5,7 +5,6 @@ import com.meow.domain.Movie;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
@@ -19,55 +18,53 @@ public class MovieService {
     private EntityManager manager;
 
     public List<Movie> getAllMovies() {
-        List<Movie> movies = manager.createQuery("Select a From Movie a", Movie.class).getResultList();
-        return movies;
+        return manager.createQuery("Select a From Movie a", Movie.class).getResultList();
     }
 
     public Movie getMovieById(Long id) {
-        Movie movie = manager.find(Movie.class, id);
-        return movie;
+        return manager.find(Movie.class, id);
     }
 
     public void addMovie(Movie movie) {
 
-            manager.persist(movie);
+        manager.persist(movie);
 
     }
 
     public void removeMovie(long id) {
-            Movie movie = manager.find(Movie.class, id);
-            for (Actor actor : movie.getActors()) {
-                manager.remove(actor);
-            }
-            manager.remove(movie);
+        Movie movie = manager.find(Movie.class, id);
+        for (Actor actor : movie.getActors()) {
+            manager.remove(actor);
+        }
+        manager.remove(movie);
 
 
     }
 
     public void updateMovie(Movie movie) {
 
-            manager.merge(movie);
+        manager.merge(movie);
 
     }
 
     public void addActorToMovie(long idMovie, long idActor) {
 
-            Actor actor = manager.find(Actor.class, idActor);
-            Movie movie = manager.find(Movie.class, idMovie);
-            movie.getActors().add(actor);
-            manager.persist(movie);
+        Actor actor = manager.find(Actor.class, idActor);
+        Movie movie = manager.find(Movie.class, idMovie);
+        movie.getActors().add(actor);
+        manager.persist(movie);
 
     }
 
     public void removeActorFromMovie(long actorId) {
         Actor actor = manager.find(Actor.class, actorId);
-        for (Movie movie: getAllMovies()) {
+        for (Movie movie : getAllMovies()) {
             movie.getActors().remove(actor);
         }
 
 //            Movie movie = manager.find(Movie.class, movieId);
 //            movie.getActors().remove(actor);
-            manager.remove(actor);
+        manager.remove(actor);
 
     }
 
@@ -75,7 +72,7 @@ public class MovieService {
         return manager.createQuery("Select a From Movie a where a.title like :custName", Movie.class).setParameter("custName", name).getSingleResult();
     }
 
-    public void clearMovies(){
+    public void clearMovies() {
         manager.createNamedQuery("movies.deleteAll").executeUpdate();
     }
 }

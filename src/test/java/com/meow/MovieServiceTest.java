@@ -33,7 +33,7 @@ public class MovieServiceTest {
                 formParam("title", movie.getTitle()).
                 formParam("releaseYear", movie.getReleaseYear()).
                 formParam("genre", movie.getGenre()).
-        when().
+                when().
                 post("/movies/").then().assertThat().statusCode(201);
 
 
@@ -76,7 +76,7 @@ public class MovieServiceTest {
 
         int size = get("/movies/{0}/actors", id).body().path("list.size()");
         when().
-                get("/movies/{0}/actors",id).
+                get("/movies/{0}/actors", id).
                 then().
                 statusCode(200).
                 body("", Matchers.hasSize(size));
@@ -90,10 +90,10 @@ public class MovieServiceTest {
                 post("/actors/").then().assertThat().statusCode(201);
 
         when().
-                get("/movies/{0}/actors",id).
+                get("/movies/{0}/actors", id).
                 then().
                 statusCode(200).
-                body("", Matchers.hasSize(size+1));
+                body("", Matchers.hasSize(size + 1));
     }
 
     @Test
@@ -115,7 +115,7 @@ public class MovieServiceTest {
         int size = get("/movies/{0}/actors", id).body().path("list.size()");
         int idActor = get("/movies/{0}/actors", id).path("id[0]");
         when().
-                get("/movies/{0}/actors",id).
+                get("/movies/{0}/actors", id).
                 then().
                 statusCode(200).
                 body("", Matchers.hasSize(size));
@@ -124,14 +124,14 @@ public class MovieServiceTest {
                 then().
                 statusCode(200);
         when().
-                get("/movies/{0}/actors",id).
+                get("/movies/{0}/actors", id).
                 then().
                 statusCode(200).
-                body("", Matchers.hasSize(size-1));
+                body("", Matchers.hasSize(size - 1));
     }
 
     @Test
-    public void  removeMovie() {
+    public void removeMovie() {
         delete("/movies/").then().assertThat().statusCode(200);
         given().
                 formParam("title", movie.getTitle()).
@@ -155,7 +155,7 @@ public class MovieServiceTest {
                 get("/movies/").
                 then().
                 statusCode(200).
-                body("", Matchers.hasSize(size-1));
+                body("", Matchers.hasSize(size - 1));
 
     }
 }

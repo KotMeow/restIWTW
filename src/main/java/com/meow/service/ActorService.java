@@ -36,6 +36,6 @@ public class ActorService {
     }
 
     public void updateActor(Actor actor) {
-            manager.merge(actor);
+        manager.merge(actor);
     }
 }

@@ -43,9 +43,9 @@ public class ActorManager {
     @Produces(MediaType.TEXT_HTML)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response addActor(@FormParam("name") String name,
-                         @FormParam("role") String role,
-                         @FormParam("movieTitle") String movieTitle,
-                         @Context HttpServletResponse servletResponse) throws IOException {
+                             @FormParam("role") String role,
+                             @FormParam("movieTitle") String movieTitle,
+                             @Context HttpServletResponse servletResponse) throws IOException {
         Actor actor = new Actor(name, role);
         if (movieService.getMoviesByName(movieTitle) != null) {
             actorService.addActor(actor);

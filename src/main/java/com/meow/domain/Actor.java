@@ -1,6 +1,9 @@
 package com.meow.domain;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -8,14 +11,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 @Entity
-@NamedQueries({
-        @NamedQuery(name="actor.deleteAll", query="Delete from Actor")
-})
 public class Actor {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
     private String name;
     private String role;
 
@@ -24,7 +24,7 @@ public class Actor {
         this.role = role;
     }
 
-    public Actor(){
+    public Actor() {
 
     }
 

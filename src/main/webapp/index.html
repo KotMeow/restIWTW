@@ -9,8 +9,7 @@
 </head>
 <style>
     html {
-        background: linear-gradient(to left, #2a99ef, #52d9e5);
-        color: #fff;
+        background: #fff;
     }
 
     .uk-panel {
@@ -98,9 +97,10 @@
         function reloadMovies() {
             $.getJSON("api/movies", function (data) {
                 $.each(data, function (key, val) {
+                    var url = "api/movies/" + val.id + "/actors";
                     $(".movieList").append("<div class='uk-panel'><h2 class='uk-panel-title'>" + val.title + "<br><span style='font-size: smaller' '>  " + val.genre +
-                        " " + val.releaseYear + "</span></h2><a class='uk-button uk-button-primary' href=" + val.id + "/displayActors" + ">Show Actors </a><br><br><a class='delete uk-button uk-button-danger' data-id='"
-                        + (val.id) + "'> Delete </a><a href=" + val.id + "/edit" + " class='edit uk-button uk-button-primary' data-id='" + (val.id) + "'> Edit </a></div>");
+                        " " + val.releaseYear + "</span></h2><a class='uk-button uk-button-primary' href=" + url +">Show Actors </a><br><br><a class='delete uk-button uk-button-danger' data-id='"
+                        + (val.id) + "'> Delete </a></div>");
 
                 });
             });
@@ -111,8 +111,7 @@
                 $.each(data, function (key, val) {
                     $(".actorsList").append("<div class='uk-panel'><h2 class='uk-panel-title'>" + val.name +
                         " " + val.role + "</h2><a class='delete uk-button uk-button-danger' data-id='" + (val.id) +
-                        "'> Delete </a><a href=" + "actors/" + val.id + "/edit" + " class='edit uk-button uk-button-primary' data-id='"
-                        + (val.id) + "'> Edit </a></div>");
+                        "'> Delete </a></div>");
                 });
             });
         }
@@ -133,7 +132,7 @@
             posting.fail(function (data) {
                 $('.movieAlert').removeClass('uk-hidden');
                 $('#movieError').text("Duplicate title");
-            });;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+            });
             document.getElementById("formMovie").reset();
         });
         $("#formActor").submit(function (event) {
